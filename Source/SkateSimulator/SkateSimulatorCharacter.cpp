@@ -20,6 +20,9 @@ ASkateSimulatorCharacter::ASkateSimulatorCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+
+	SkateboardMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkateboardMesh"));
+	SkateboardMesh->SetupAttachment(GetMesh());
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -105,10 +108,10 @@ void ASkateSimulatorCharacter::Move(const FInputActionValue& Value)
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector ForwardDirection = SkateboardMesh->GetForwardVector();
 	
 		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector RightDirection = SkateboardMesh->GetRightVector();
 
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);

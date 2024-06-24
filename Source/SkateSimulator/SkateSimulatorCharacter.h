@@ -20,6 +20,10 @@ class ASkateSimulatorCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	/** The main skeletal mesh associated with this Character (optional sub-object). */
+	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> SkateboardMesh;
+
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
