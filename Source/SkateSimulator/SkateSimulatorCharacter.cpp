@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -21,6 +22,11 @@ ASkateSimulatorCharacter::ASkateSimulatorCharacter()
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
+	// Setting the root component
+	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	RootComp->SetupAttachment(RootComponent);
+
+	GetMesh()->SetupAttachment(RootComp);
 	SkateboardMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkateboardMesh"));
 	SkateboardMesh->SetupAttachment(GetMesh());
 		
@@ -55,6 +61,8 @@ ASkateSimulatorCharacter::ASkateSimulatorCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	MFValue = 0.0f;
 }
 
 void ASkateSimulatorCharacter::BeginPlay()
@@ -103,19 +111,20 @@ void ASkateSimulatorCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		MFValue = FMath::Lerp(MFValue, MovementVector.Y, 0.01f);
+
+		float MRValue = MovementVector.X * 0.001;
 
 		// get forward vector
-		const FVector ForwardDirection = SkateboardMesh->GetForwardVector();
+		const FVector ForwardDirection = RootComp->GetForwardVector();
 	
 		// get right vector 
-		const FVector RightDirection = SkateboardMesh->GetRightVector();
+		const FVector RightDirection = RootComp->GetRightVector();
 
 		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		AddMovementInput(RightDirection, MRValue);
+		AddMovementInput(ForwardDirection, MFValue);
 	}
 }
 

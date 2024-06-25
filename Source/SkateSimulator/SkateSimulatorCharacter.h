@@ -20,7 +20,9 @@ class ASkateSimulatorCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** The main skeletal mesh associated with this Character (optional sub-object). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* RootComp;
+
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> SkateboardMesh;
 
@@ -47,6 +49,9 @@ class ASkateSimulatorCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	float MFValue;
 
 public:
 	ASkateSimulatorCharacter();
